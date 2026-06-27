@@ -65,7 +65,7 @@ npm run data:validate                         # 校验：空值/重复/标签合
 
 仓库已内置 GitHub Actions（`.github/workflows/deploy.yml`）：推送到 `main` 后，在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions** 即可自动部署。
 
-生产构建的 `base` 默认为 `/ocean-of-poetry/`；若仓库名不同，用环境变量覆盖：
+本站绑定自定义域名 **shihai.snowqin.com**（`public/CNAME`），故 `base` 为 `/`。若要部署到项目页 URL（`用户名.github.io/仓库名/`），用环境变量覆盖：
 
 ```bash
 BASE_PATH=/你的仓库名/ npm run build
