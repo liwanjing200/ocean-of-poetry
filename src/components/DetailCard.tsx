@@ -36,6 +36,22 @@ function Decoration() {
   );
 }
 
+/** 诗海光度 as 1–5 small dots. */
+function Luminosity({ value }: { value: number }) {
+  const lit = Math.max(1, Math.min(5, Math.round(value / 4)));
+  return (
+    <span className="inline-flex items-center gap-1 align-middle" title={`诗海光度 ${value}`}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <span
+          key={i}
+          className="block h-1.5 w-1.5 rounded-full"
+          style={{ background: i < lit ? '#e8cf8f' : 'rgba(184,151,90,0.25)' }}
+        />
+      ))}
+    </span>
+  );
+}
+
 export default function DetailCard({ poet, favHas, onToggleFav, onExplore }: Props) {
   if (!poet) {
     return (
@@ -53,16 +69,17 @@ export default function DetailCard({ poet, favHas, onToggleFav, onExplore }: Pro
   return (
     <motion.div
       key={poet.name}
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: 'easeOut' }}
+      initial={{ opacity: 0, x: 14 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
       className="relative flex h-full flex-col px-7 py-7"
     >
       <Decoration />
       <div className="relative z-10">
         <h2 className="font-serif text-4xl tracking-wide text-gold-300">{poet.name}</h2>
-        <p className="mt-2 text-sm text-haze-300">
-          {poet.dynasty}代 · {poet.life}
+        <p className="mt-2 flex items-center gap-3 text-sm text-haze-300">
+          <span>{poet.dynasty}代 · {poet.life}</span>
+          <Luminosity value={poet.luminosity} />
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
           {poet.styles.map((s) => (
@@ -77,24 +94,42 @@ export default function DetailCard({ poet, favHas, onToggleFav, onExplore }: Pro
       </div>
 
       {main && (
-        <div className="relative z-10 mt-7 border-t border-mist-400/40 pt-6">
+        <motion.div
+          key={main.id}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
+          className="relative z-10 mt-6 flex-1 overflow-y-auto"
+        >
+          {/* layer 1 — 原诗 */}
           <p className="text-xs tracking-widest text-haze-500">代 表 诗 作</p>
           <h3 className="mt-2 font-serif text-2xl text-haze-100">《{main.title}》</h3>
           <div className="mt-4 space-y-1.5 font-serif text-[17px] leading-relaxed text-haze-100/90">
-            {lines.slice(0, 4).map((l, i) => (
+            {lines.slice(0, 6).map((l, i) => (
               <p key={i}>{l}</p>
             ))}
           </div>
-          <p className="mt-4 text-sm leading-relaxed text-haze-500">{main.note}</p>
-        </div>
+
+          {/* layer 2 — 现代解释 */}
+          <div className="mt-5 border-l-2 border-mist-400/50 pl-3">
+            <p className="text-[11px] tracking-widest text-haze-500">现代解释</p>
+            <p className="mt-1 text-sm leading-relaxed text-haze-300">{main.note}</p>
+          </div>
+
+          {/* layer 3 — 为什么此刻适合读它 */}
+          <div className="mt-3 rounded-lg bg-gold-500/[0.07] p-3">
+            <p className="text-[11px] tracking-widest text-gold-400/80">为什么此刻适合读它</p>
+            <p className="mt-1 text-sm leading-relaxed text-haze-200">{main.whyNow}</p>
+          </div>
+        </motion.div>
       )}
 
-      <div className="relative z-10 mt-auto flex items-center gap-4 pt-6">
+      <div className="relative z-10 mt-5 flex items-center gap-4 pt-2">
         {main && (
           <button
             onClick={() => onToggleFav(main.id)}
             aria-label="收藏"
-            className={`flex h-10 w-10 items-center justify-center rounded-full border transition-colors ${
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-colors ${
               favHas(main.id)
                 ? 'border-gold-500/60 bg-gold-500/10 text-gold-300'
                 : 'border-mist-400/70 text-haze-500 hover:text-gold-300'

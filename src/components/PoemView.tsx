@@ -22,9 +22,15 @@ export default function PoemView({
         ))}
       </div>
 
-      <p className="mt-5 rounded-lg bg-ink-500/40 p-4 text-sm leading-relaxed text-haze-300">
-        {poem.note}
-      </p>
+      <div className="mt-5 border-l-2 border-mist-400/50 pl-3">
+        <p className="text-[11px] tracking-widest text-haze-500">现代解释</p>
+        <p className="mt-1 text-sm leading-relaxed text-haze-300">{poem.note}</p>
+      </div>
+
+      <div className="mt-3 rounded-lg bg-gold-500/[0.07] p-3">
+        <p className="text-[11px] tracking-widest text-gold-400/80">为什么此刻适合读它</p>
+        <p className="mt-1 text-sm leading-relaxed text-haze-200">{poem.whyNow}</p>
+      </div>
 
       <div className="mt-4 flex flex-wrap gap-1.5">
         {poem.emotions.map((e) => (

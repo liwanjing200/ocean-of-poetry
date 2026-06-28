@@ -43,6 +43,9 @@ poems.forEach((p, i) => {
 
   if (!p.note || !p.note.trim()) errors.push(`${where}: empty note`);
   else if ([...p.note].length > 60) errors.push(`${where}: note > 60 chars (${[...p.note].length})`);
+
+  if (!p.whyNow || !p.whyNow.trim()) errors.push(`${where}: empty whyNow`);
+  else if ([...p.whyNow].length > 60) errors.push(`${where}: whyNow > 60 chars (${[...p.whyNow].length})`);
 });
 
 console.log(`Validated ${poems.length} poems.`);

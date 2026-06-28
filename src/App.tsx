@@ -5,7 +5,7 @@ import { useFavorites } from './hooks/useFavorites';
 import { useMediaQuery } from './hooks/useMediaQuery';
 import { toLines } from './lib/poem';
 import LeftNav, { type NavKey } from './components/LeftNav';
-import StarMap from './components/StarMap';
+import StarMap, { type HoverInfo } from './components/StarMap';
 import DetailCard from './components/DetailCard';
 import DailyPoem from './components/DailyPoem';
 import EmotionFinder from './components/EmotionFinder';
@@ -38,6 +38,7 @@ export default function App() {
   const [filter, setFilter] = useState<Filter>(null);
   const [modal, setModal] = useState<ModalState>(null);
   const [query, setQuery] = useState('');
+  const [hover, setHover] = useState<HoverInfo | null>(null);
 
   const dailyRef = useRef<HTMLDivElement>(null);
   const emotionRef = useRef<HTMLDivElement>(null);
@@ -146,7 +147,23 @@ export default function App() {
         {/* star map */}
         <main className="order-1 md:order-2">
           <div className="relative h-[52vh] min-h-[340px] overflow-hidden rounded-2xl border border-mist-400/40 bg-ink-700/50 md:h-[58vh]">
-            <StarMap poets={poets} selected={selected} highlight={highlight} onSelect={onSelectPoet} />
+            <StarMap
+              poets={poets}
+              selected={selected}
+              highlight={highlight}
+              focusDynasty={filter?.kind === 'dynasty' ? filter.value : null}
+              onSelect={onSelectPoet}
+              onHover={setHover}
+            />
+            {hover && (
+              <div
+                className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-full rounded-lg border border-gold-500/30 bg-ink-700/90 px-3 py-1.5 text-center backdrop-blur-sm"
+                style={{ left: hover.x, top: hover.y - 14, maxWidth: 220 }}
+              >
+                <div className="font-serif text-sm text-gold-300">{hover.name}</div>
+                {hover.line && <div className="mt-0.5 font-serif text-xs text-haze-300">{hover.line}</div>}
+              </div>
+            )}
             <div className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 text-center">
               <p className="font-serif text-sm text-haze-300/80">每一首诗，都是一颗星辰</p>
               <p className="mt-1 font-serif text-xs text-haze-500">在千年的诗海中，遇见你的诗</p>

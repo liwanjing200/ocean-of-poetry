@@ -14,7 +14,10 @@ export interface Poem {
   paragraphs: string[];
   emotions: Emotion[];
   themes: Theme[];
+  /** One-line modern explanation (≤60 chars). */
   note: string;
+  /** "Why it suits this moment" — second-person, situational. */
+  whyNow: string;
   source: string;
 }
 
@@ -29,8 +32,10 @@ export interface Poet {
   /** Preset star coordinates in normalized space, roughly [-1, 1]. */
   x: number;
   y: number;
-  /** Visual magnitude 1 (brightest) – 3 (faint), drives star size. */
+  /** Visual magnitude 1 (brightest) – 3 (faint). */
   mag: 1 | 2 | 3;
   /** Joined at runtime. */
   poems: Poem[];
+  /** "诗海光度": star radius driver, blends curated work-count and fame. */
+  luminosity: number;
 }

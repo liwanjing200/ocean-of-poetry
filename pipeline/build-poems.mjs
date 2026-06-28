@@ -17,6 +17,10 @@ const annPath = 'pipeline/annotations.json';
 const ann = fs.existsSync(annPath)
   ? JSON.parse(fs.readFileSync(annPath, 'utf8'))
   : {};
+const whyPath = 'pipeline/whynow.json';
+const why = fs.existsSync(whyPath)
+  ? JSON.parse(fs.readFileSync(whyPath, 'utf8'))
+  : {};
 
 const slug = (s) =>
   pinyin(s.replace(/[《》·・\s]/g, ''), { toneType: 'none', type: 'array' })
@@ -63,6 +67,7 @@ for (const sel of selection) {
     emotions: a.emotions || [],
     themes: a.themes || [],
     note: a.note || '',
+    whyNow: why[id] || '',
     source: m.src,
   });
 }
@@ -74,5 +79,5 @@ if (errors.length) {
 fs.mkdirSync('src/data', { recursive: true });
 fs.writeFileSync(path.join('src/data', 'poems.json'), JSON.stringify(poems, null, 2));
 console.log(`\nwrote ${poems.length}/${selection.length} poems to src/data/poems.json`);
-const missingAnn = poems.filter((p) => !p.note || !p.emotions.length).length;
+const missingAnn = poems.filter((p) => !p.note || !p.emotions.length || !p.whyNow).length;
 console.log(`poems without full annotation: ${missingAnn}`);

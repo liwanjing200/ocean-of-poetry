@@ -9,7 +9,7 @@ export const poems = poemsRaw as Poem[];
  * characterizations. x/y are hand-placed star coordinates (normalized ~[-1,1]);
  * mag drives star brightness (1 = major poet). poems are joined from poems.json.
  */
-type PoetMeta = Omit<Poet, 'poems' | 'mag'> & { mag?: Poet['mag'] };
+type PoetMeta = Omit<Poet, 'poems' | 'mag' | 'luminosity'> & { mag?: Poet['mag'] };
 
 const META: PoetMeta[] = [
   // ── 先秦 ──
@@ -61,11 +61,13 @@ function build(): Poet[] {
     arr.push(p);
     byAuthor.set(p.author, arr);
   }
-  return META.map((m) => ({
-    ...m,
-    mag: (m.mag ?? 3) as Poet['mag'],
-    poems: byAuthor.get(m.name) ?? [],
-  }));
+  return META.map((m) => {
+    const ps = byAuthor.get(m.name) ?? [];
+    const mag = (m.mag ?? 3) as Poet['mag'];
+    // 诗海光度 = how many curated works (presence in the sea) + fame floor.
+    const fame = mag === 1 ? 6 : mag === 2 ? 2.5 : 0;
+    return { ...m, mag, poems: ps, luminosity: ps.length + fame };
+  });
 }
 
 export const poets: Poet[] = build();
